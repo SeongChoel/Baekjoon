@@ -1,32 +1,37 @@
-# 백트래킹 (Python3 통과, PyPy3도 통과)
-import sys
+n = int(input())
+arr = list(map(int, input().split()))
+add, sub, mul, div = map(int, input().split())
 
-input = sys.stdin.readline
-N = int(input())
-num = list(map(int, input().split()))
-op = list(map(int, input().split()))  # +, -, *, //
-
-maximum = -1e9
-minimum = 1e9
+maxV = -1e9 -1
+minV = 1e9 +1
 
 
-def dfs(depth, total, plus, minus, multiply, divide):
-    global maximum, minimum
-    if depth == N:
-        maximum = max(total, maximum)
-        minimum = min(total, minimum)
-        return
+def dfs(i, now):
+    global minV, maxV, add, sub, mul, div
 
-    if plus:
-        dfs(depth + 1, total + num[depth], plus - 1, minus, multiply, divide)
-    if minus:
-        dfs(depth + 1, total - num[depth], plus, minus - 1, multiply, divide)
-    if multiply:
-        dfs(depth + 1, total * num[depth], plus, minus, multiply - 1, divide)
-    if divide:
-        dfs(depth + 1, int(total / num[depth]), plus, minus, multiply, divide - 1)
+    if i == n:  # 모든 연산자를 다 사용한 경우
+        minV = min(minV, now)
+        maxV = max(maxV, now)
+    else:
+        if add > 0:
+            add -= 1
+            dfs(i + 1, now + arr[i])
+            add += 1  # 백트래킹
+        if sub > 0:
+            sub -= 1
+            dfs(i + 1, now - arr[i])
+            sub += 1
+        if mul > 0:
+            mul -= 1
+            dfs(i + 1, now * arr[i])
+            mul += 1
+        if div > 0:
+            div -= 1
+            dfs(i + 1, int(now / arr[i]))
+            div += 1
 
 
-dfs(1, num[0], op[0], op[1], op[2], op[3])
-print(maximum)
-print(minimum)
+dfs(1, arr[0])  # 다음인덱스, 현재수의합
+
+print(maxV)
+print(minV)
