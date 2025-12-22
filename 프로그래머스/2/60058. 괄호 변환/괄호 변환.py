@@ -1,4 +1,4 @@
-def func(p):
+def func(p):  # 올바른 괄호 문자열
     cnt = 0
     for i in p:
         if i == '(':
@@ -21,6 +21,7 @@ def check(p):
             cnt -= 1
         if cnt == 0:
             return i
+    return None
 
 
 def solution(p):
@@ -29,31 +30,32 @@ def solution(p):
     if p == "":
         return ""
 
-    if func(p):
-        return p
-
-    # 위에 조건 2개가 아닐때 즉 올바른 괄호 문자열이 아니라면
+    # 분리
     index = check(p)
     u = p[:index + 1]
     v = p[index + 1:]
 
     if func(u):
         return u + solution(v)
-
     else:
-        answer = "("
+        answer += "("
         answer += solution(v)
-        answer += ')'
-        u = list(u[1:-1])
-        for i in range(len(u)):
-            if u[i] == '(':
-                u[i] = ')'
+        answer += ")"
+
+        temp_u = ""
+        for i in range(1, len(u) - 1):
+            temp_u += u[i]
+
+        temp_uu = ""
+
+        for i in temp_u:
+            if i == ")":
+                temp_uu += "("
             else:
-                u[i] = '('
+                temp_uu += ")"
 
-        answer += "".join(u)
+        answer += temp_uu
 
-    return answer
+        return answer
 
 
-print(solution("()))((()"))
